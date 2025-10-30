@@ -299,7 +299,7 @@ class HungarianAssignment:
         return assignmentMatrix
 
     def Display(self) -> None:
-        print("\nAssignments RowToColumn:")
+        print("\nAssignments: ")
         for pairIndex, pairValue in enumerate(self.Assignments, start=1):
             rowIndex, columnIndex = pairValue
             print(f"  Worker {rowIndex + 1} To Task {columnIndex + 1}  Value {self.OriginalMatrix[rowIndex][columnIndex]}")
@@ -315,9 +315,9 @@ def RunHungarian() -> None:
     #     [1, 2, 1, 3, 3]
     # ]
     demoMatrix: List[List[float]] = [
-        [10, 5, 8],
-        [9, 12, 7],
-        [6, 11, 10],
+        [10, 9, 5],
+        [9, 8, 3],
+        [6, 4, 7]
 
     ]
     print("Task matrix:")
@@ -325,7 +325,7 @@ def RunHungarian() -> None:
         print(row)
     print()
 
-    solver = HungarianAssignment(demoMatrix, isMaximization=True, showReductions=True)
+    solver = HungarianAssignment(demoMatrix, isMaximization=False, showReductions=True)
     assignMat = solver.Solve()
     solver.Display()
     print("\nAssignment Matrix With Chosen Values:")
