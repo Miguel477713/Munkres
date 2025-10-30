@@ -302,7 +302,7 @@ class HungarianAssignment:
         print("\nAssignments: ")
         for pairIndex, pairValue in enumerate(self.Assignments, start=1):
             rowIndex, columnIndex = pairValue
-            print(f"  Worker {rowIndex + 1} To Task {columnIndex + 1}  Value {self.OriginalMatrix[rowIndex][columnIndex]}")
+            print(f"  Worker {rowIndex + 1} assigned to task {columnIndex + 1} with value {self.OriginalMatrix[rowIndex][columnIndex]}")
         print("\nTotal {} Value: {}".format("Maximum" if self.IsMaximization else "Minimum", self.TotalValue))
 
 
