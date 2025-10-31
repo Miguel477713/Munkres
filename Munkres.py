@@ -321,7 +321,7 @@ def RunHungarian() -> None:
     #     [9, 8, 3],
     #     [6, 4, 7]
 
-    #
+    # 
 
 
     print("Task matrix:")
