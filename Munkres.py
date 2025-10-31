@@ -33,8 +33,8 @@ class HungarianAssignment:
             self.CostMatrix = [row[:] for row in costMatrix]
 
         if self.IsMaximization and self.ShowReductions:
-            print(f"\nConverted Profit Matrix To Cost Matrix (using M = {maximumValue}):")
-            self.PrintMatrix("Cost Matrix Prepared For Minimization:", self.CostMatrix)
+            print(f"\nConverted profit matrix to cost matrix (using Maximum = {maximumValue}):")
+            self.PrintMatrix("Cost matrix prepared for minimization:", self.CostMatrix)
 
         # Working matrix for transformations
         self.CurrentMatrix: List[List[float]] = [row[:] for row in self.CostMatrix]
@@ -66,7 +66,7 @@ class HungarianAssignment:
             for columnIndex in range(self.MatrixSize):
                 self.CurrentMatrix[rowIndex][columnIndex] -= rowMinimum
         if self.ShowReductions:
-            self.PrintMatrix("After Row Reduction:", self.CurrentMatrix)
+            self.PrintMatrix("After row Reduction:", self.CurrentMatrix)
 
     # Step 2: Column Reduction
     def ColumnReduction(self) -> None:
@@ -75,13 +75,14 @@ class HungarianAssignment:
             for rowIndex in range(self.MatrixSize):
                 self.CurrentMatrix[rowIndex][columnIndex] -= columnMinimum
         if self.ShowReductions:
-            self.PrintMatrix("After Column Reduction:", self.CurrentMatrix)
+            self.PrintMatrix("After column Reduction:", self.CurrentMatrix)
 
     def SelectIndependentZeros(self) -> List[Index]:
         """
         Greedy selection of independent zeros: pick a zero in rows with the fewest zeros first.
         This gives a valid set of independent zeros for building the minimal cover.
         """
+        #zeroMask[r][c] is True if the working matrix has a zero at (r,c)
         zeroMask: List[List[bool]] = [
             [self.CurrentMatrix[rowIndex][columnIndex] == 0 for columnIndex in range(self.MatrixSize)]
             for rowIndex in range(self.MatrixSize)
@@ -190,13 +191,13 @@ class HungarianAssignment:
                 kPositions.append((rowIndex + 1, columnIndex + 1))
 
         # Print a concise report of uncovered cells and k locations
-        print("Uncovered cells (row, column, value):")
+        print("Uncovered cells [row, column] = value:")
         if uncoveredCells:
-            print(", ".join(f"({r+1}, {c+1}, {v})" for r, c, v in uncoveredCells))
+            print(", ".join(f"[{r+1}, {c+1}] = {v}" for r, c, v in uncoveredCells))
         else:
             print("(none)")
 
-        print(f"Adjustment applied (k = {smallestUncovered}) at positions: {kPositions}")
+        print(f"Smallest uncovered value, k = {smallestUncovered} from position(s): {kPositions}")
 
         # Apply the standard Hungarian adjustment
         for rowIndex in range(self.MatrixSize):
@@ -212,7 +213,8 @@ class HungarianAssignment:
                     self.CurrentMatrix[rowIndex][columnIndex] += smallestUncovered
 
         if self.ShowReductions:
-            self.PrintMatrix("After Adjustment:", self.CurrentMatrix)
+            print()
+            self.PrintMatrix("Adjustment: Subtract k from uncovered values and add k to double-covered values.", self.CurrentMatrix)
 
     # Step 5: Repeat Coverage Until Full Cover Is Possible
     def RepeatUntilCovered(self) -> None:
@@ -221,7 +223,7 @@ class HungarianAssignment:
             lineCount = sum(1 for flag in self.CoveredRows if flag) + sum(1 for flag in self.CoveredColumns if flag)
 
             #print how many lines are used each iteration
-            print(f"Number of minimum lines used: {lineCount}. It shall be n={self.MatrixSize}")
+            print(f"Number of minimum lines used: {lineCount}. It shall be n = {self.MatrixSize}")
 
             if self.ShowReductions:
                 self.PrintCoverage()
@@ -303,32 +305,34 @@ class HungarianAssignment:
         for pairIndex, pairValue in enumerate(self.Assignments, start=1):
             rowIndex, columnIndex = pairValue
             print(f"  Worker {rowIndex + 1} assigned to task {columnIndex + 1} with value {self.OriginalMatrix[rowIndex][columnIndex]}")
-        print("\nTotal {} Value: {}".format("Maximum" if self.IsMaximization else "Minimum", self.TotalValue))
+        print("\nTotal {} value: {}".format("maximum" if self.IsMaximization else "minimum", self.TotalValue))
 
 
 def RunHungarian() -> None:
-    # demoMatrix: List[List[float]] = [
-    #     [3, 5, 5, 4, 1],
-    #     [2, 2, 0, 2, 2],
-    #     [2, 4, 4, 1, 0],
-    #     [0, 1, 1, 0, 0],
-    #     [1, 2, 1, 3, 3]
-    # ]
     demoMatrix: List[List[float]] = [
-        [10, 9, 5],
-        [9, 8, 3],
-        [6, 4, 7]
-
+        [3, 5, 5, 4, 1],
+        [2, 2, 0, 2, 2],
+        [2, 4, 4, 1, 0],
+        [0, 1, 1, 0, 0],
+        [1, 2, 1, 3, 3]
     ]
+    # demoMatrix: List[List[float]] = [
+    #     [10, 9, 5],
+    #     [9, 8, 3],
+    #     [6, 4, 7]
+
+    # 
+
+
     print("Task matrix:")
     for row in demoMatrix:
         print(row)
     print()
 
-    solver = HungarianAssignment(demoMatrix, isMaximization=False, showReductions=True)
+    solver = HungarianAssignment(demoMatrix, isMaximization=True, showReductions=True)
     assignMat = solver.Solve()
     solver.Display()
-    print("\nAssignment Matrix With Chosen Values:")
+    print("\nAssignment matrix with chosen values:")
     for row in assignMat:
         print(row)
 
